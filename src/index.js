@@ -1,0 +1,76 @@
+//jshint esversion: 9
+
+const path = require("path");
+const express = require("express");
+const mustacheExpress = require("mustache-express");
+const app = express();
+const dotenv = require("dotenv")
+
+dotenv.config();
+// Setting variables for the different views
+const publicDir = path.join(__dirname, "../public");
+const viewsDir = path.join(__dirname, "../templates/views");
+const partialsDir = path.join(__dirname + "../../templates/partials");
+
+// Setting up the templating engine => Register '.mustache' extension with The Mustache Express
+// Setting up the partials engine passed to mustacheExpress(....)
+app.engine("html", mustacheExpress(partialsDir, '.html'));
+// Setting the view engine to html
+app.set("view engine", "html");
+//Setting up the views 
+app.set("views", viewsDir);
+// Setting up the public files
+app.use(express.static(publicDir));
+// response.body that comes in as a json object
+app.use(express.json());
+
+
+// custom middleware to verify the time of the request
+app.use((req, res, next) => {
+  const time = new Date().toUTCString();
+  req.time = time;
+  next();
+})
+
+
+app.get("", (req, res) => {
+ res.render("index", {
+  title: "Home",
+  year: new Date().getFullYear(),
+  reqTime: req.time,
+  route: "/home"
+ });
+});
+
+app.get("/service", (req, res) => {
+ res.render("service", {
+  title: "Service",
+  year: new Date().getFullYear(),
+  reqTime: req.time,
+  route: "/service"
+
+ });
+});
+
+app.get("/contact", (req, res) => {
+  res.render("contact", {
+    title: "Contact Us",
+    year: new Date().getFullYear(),
+    reqTime: req.time,
+    route: "/contact"
+  });
+});
+
+
+app.get("*", (req, res) => {
+  res.render("404", {
+    title: "404",
+    year: new Date().getFullYear(),
+    reqTime: req.time,
+    route: "non-routable"
+  });
+});
+const port = process.env.PORT;
+app.listen(port, () => {
+ console.log(`Server is listening on port ${port}`);
+});
