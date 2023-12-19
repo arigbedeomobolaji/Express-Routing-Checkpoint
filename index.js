@@ -26,9 +26,11 @@ app.use(express.json());
 
 
 // custom middleware to verify the time of the request
-app.use((req, res, next) => {
+const middleware = ((req, res, next) => {
   const time = new Date().getHours();
+
   if(time >= 9 && time <= 16) {
+    
     next()
   }else {
     res.status(200).json({message: "This webpage is only accessible between working hours (09:00 to 17:00)"})
@@ -37,7 +39,7 @@ app.use((req, res, next) => {
 })
 
 
-app.get("/", (req, res) => {
+app.get("/", middleware, (req, res) => {
  res.render("index", {
   title: "Home",
   year: new Date().getFullYear(),
@@ -46,7 +48,7 @@ app.get("/", (req, res) => {
  });
 });
 
-app.get("/service", (req, res) => {
+app.get("/service", middleware, (req, res) => {
  res.render("service", {
   title: "Service",
   year: new Date().getFullYear(),
@@ -56,7 +58,7 @@ app.get("/service", (req, res) => {
  });
 });
 
-app.get("/contact", (req, res) => {
+app.get("/contact",middleware, (req, res) => {
   res.render("contact", {
     title: "Contact Us",
     year: new Date().getFullYear(),
@@ -66,7 +68,7 @@ app.get("/contact", (req, res) => {
 });
 
 
-app.get("*", (req, res) => {
+app.get("*",middleware, (req, res) => {
   res.render("404", {
     title: "404",
     year: new Date().getFullYear(),
