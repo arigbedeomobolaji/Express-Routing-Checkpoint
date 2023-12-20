@@ -7,7 +7,10 @@ const app = express();
 const dotenv = require("dotenv")
 
 dotenv.config();
+process.env.TZ = ":auto:"
 const userTimezoneOffset = new Date().getTimezoneOffset() / 60;
+
+
 // Setting variables for the different views
 const publicDir = path.join(__dirname, "./public");
 const viewsDir = path.join(__dirname, "./templates/views");
