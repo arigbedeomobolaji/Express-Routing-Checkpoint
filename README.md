@@ -25,13 +25,15 @@ To run the application locally, follow these steps:
    git clone https://github.com/arigbedeomobolaji/express-routing-checkpoint.git
 
 2.  Install dependencies
+   
    ```bash
-    npm install
+   npm install
 
+3.  Install dependencies
 
-3.  start the dev server
     ```bash
     npm run dev
+    
 
 
 4.  Access the routes
