@@ -5,10 +5,9 @@ const express = require("express");
 const mustacheExpress = require("mustache-express");
 const app = express();
 const dotenv = require("dotenv")
+const moment = require('moment-timezone');
 
 dotenv.config();
-process.env.TZ = ":auto:"
-const userTimezoneOffset = new Date().getTimezoneOffset() / 60;
 
 
 // Setting variables for the different views
@@ -31,17 +30,15 @@ app.use(express.json());
 
 // custom middleware to verify the time of the request
 const middleware = ((req, res, next) => {
-  let time = new Date().getHours();
-  if(process.env.NODE_ENV === 'production') {
-    console.log(time)
-    time -= userTimezoneOffset
-    console.log({time, userTimezoneOffset})
-  }
-  
-  if(time >= 8 && time <= 16) {  
+  const timezone = 'Africa/Lagos';
+  // Get the current time in the specified timezone
+  const currentTime = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
+  const time = new Date(currentTime).getHours()
+
+  if(time >= 9 && time <= 16) {  
     next()
   }else {
-    res.status(200).json({message: "This webpage is only accessible between working hours (09:00 to 17:00)"})
+    res.status(200).json({message: "This webpage is only accessible between working hours (09:00 to 17:00) using GMT+0"})
   }
   
 })
