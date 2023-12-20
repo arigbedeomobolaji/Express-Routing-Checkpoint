@@ -28,9 +28,8 @@ app.use(express.json());
 // custom middleware to verify the time of the request
 const middleware = ((req, res, next) => {
   const time = new Date().getHours();
-
-  if(time >= 9 && time <= 16) {
-    
+  console.log(time);
+  if(time >= 9 && time <= 16) {  
     next()
   }else {
     res.status(200).json({message: "This webpage is only accessible between working hours (09:00 to 17:00)"})
