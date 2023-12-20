@@ -7,6 +7,7 @@ const app = express();
 const dotenv = require("dotenv")
 
 dotenv.config();
+const userTimezoneOffset = new Date().getTimezoneOffset() / 60;
 // Setting variables for the different views
 const publicDir = path.join(__dirname, "./public");
 const viewsDir = path.join(__dirname, "./templates/views");
@@ -27,8 +28,13 @@ app.use(express.json());
 
 // custom middleware to verify the time of the request
 const middleware = ((req, res, next) => {
-  const time = new Date().getHours();
-  console.log("time", time);
+  let time = new Date().getHours();
+  if(process.env.NODE_ENV === 'production') {
+    console.log(time)
+    time -= userTimezoneOffset
+    console.log({time, userTimezoneOffset})
+  }
+  
   if(time >= 8 && time <= 16) {  
     next()
   }else {
